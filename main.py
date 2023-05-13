@@ -1,8 +1,8 @@
 import cv2
 
 # Load the two images
-img1 = cv2.imread('Photos/noHole.jpg')
-img2 = cv2.imread('Photos/oneHole.jpg')
+img1 = cv2.imread('Photos/noSticker.jpg')
+img2 = cv2.imread('Photos/oneSticker.jpg')
 
 # Compute the absolute difference between the two images
 diff = cv2.absdiff(img1, img2)
