@@ -30,11 +30,6 @@ print('Python Version:',sys.version)
 #     https://raw.githubusercontent.com/computationalcore/introduction-to-opencv/master/assets/noidea.jpg \
 #     -O noidea.jpg
 
-# # Download other Sample Images
-# !wget --no-check-certificate \
-#     https://raw.githubusercontent.com/MeAmarP/sample_imgs/master/wiki_shapes.jpg \
-#     -O wiki_shapes.jpg
-
 # !wget --no-check-certificate \
 #     https://raw.githubusercontent.com/MeAmarP/sample_imgs/master/indian_coins.jpg \
 #     -O indian_coins.jpg
