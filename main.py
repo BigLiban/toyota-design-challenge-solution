@@ -70,7 +70,7 @@ def main():
     # Release the video capture and close windows
     cap.release()
     cv2.destroyAllWindows()
-
+#wsg
 # Run the main function
 if __name__ == "__main__":
     main()
