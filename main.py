@@ -1,3 +1,6 @@
+from google.colab import drive
+drive.mount('/content/gdrive')
+
 # import dependencies
 import os
 import sys
@@ -25,10 +28,16 @@ import time
 print('OpenCV-Python Lib Version:', cv2.__version__)
 print('Python Version:',sys.version)
 
+
 # # Download the test image
 # !wget --no-check-certificate \
 #     https://raw.githubusercontent.com/computationalcore/introduction-to-opencv/master/assets/noidea.jpg \
 #     -O noidea.jpg
+
+# # Download other Sample Images
+# !wget --no-check-certificate \
+#     https://raw.githubusercontent.com/MeAmarP/sample_imgs/master/wiki_shapes.jpg \
+#     -O wiki_shapes.jpg
 
 # !wget --no-check-certificate \
 #     https://raw.githubusercontent.com/MeAmarP/sample_imgs/master/indian_coins.jpg \
