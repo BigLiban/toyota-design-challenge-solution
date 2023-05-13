@@ -1,34 +1,76 @@
 import cv2
+import numpy as np
 
-# Load the two images
-img1 = cv2.imread('Photos/1_no_holes_covered.jpg')
-img2 = cv2.imread('Photos/6_some_holes_covered.jpg')
+# Sticker detection function
+def detect_stickers(frame):
+    # Apply sticker detection algorithm to identify stickers in the frame
+    # You can implement color-based segmentation, template matching, or other techniques
 
-# Compute the absolute difference between the two images
-diff = cv2.absdiff(img1, img2)
+    # Example: Color-based segmentation using HSV color space
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+    lower_blue = np.array([90, 50, 50])
+    upper_blue = np.array([130, 255, 255])
+    mask = cv2.inRange(hsv, lower_blue, upper_blue)
+    stickers = cv2.bitwise_and(frame, frame, mask=mask)
 
-# Convert the difference to grayscale
-gray = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
+    return stickers
 
-# Apply threshold to filter out small differences
-threshold_value = 32 # adjust to fit your use case
-_, thresh = cv2.threshold(gray, threshold_value, 255, cv2.THRESH_BINARY)
+# Hole detection function
+def detect_holes(frame):
+    # Apply hole detection algorithm to locate the holes in the frame
+    # You can use techniques like edge detection, contour analysis, or thresholding
 
-# Apply a median filter to remove noise
-kernel_size = 3 # adjust to fit your use case
-median = cv2.medianBlur(thresh, kernel_size)
+    # Example: Simple binary thresholding using grayscale image
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    _, binary = cv2.threshold(gray, 100, 255, cv2.THRESH_BINARY)
+    contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-# Find contours of the differences
-contours, _ = cv2.findContours(median, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    # Filter out small contours
+    min_contour_area = 100
+    valid_holes = []
+    for contour in contours:
+        if cv2.contourArea(contour) > min_contour_area:
+            valid_holes.append(contour)
 
-# Draw rectangles around the differences
-for contour in contours:
-    (x, y, w, h) = cv2.boundingRect(contour)
-    cv2.rectangle(img1, (x, y), (x + w, y + h), (0, 0, 255), 2)
-    cv2.rectangle(img2, (x, y), (x + w, y + h), (0, 0, 255), 2)
+    return valid_holes
 
-# Display the images with differences highlighted
-cv2.imshow('Image 1', img1)
-cv2.imshow('Image 2', img2)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+# Main function
+def main():
+    # Open the video capture
+    cap = cv2.VideoCapture(0)
+
+    while True:
+        # Read a frame from the video capture
+        ret, frame = cap.read()
+
+        if not ret:
+            break
+
+        # Perform sticker detection
+        stickers = detect_stickers(frame)
+
+        # Perform hole detection
+        holes = detect_holes(frame)
+
+        # Match stickers with holes (implement your matching logic here)
+
+        # Visualize the results
+        for sticker in stickers:
+            cv2.rectangle(frame, (sticker[0], sticker[1]), (sticker[2], sticker[3]), (0, 255, 0), 2)
+        for hole in holes:
+            cv2.drawContours(frame, [hole], -1, (0, 0, 255), 2)
+
+        # Display the frame
+        cv2.imshow("Sticker and Hole Detection", frame)
+
+        # Check for key press to exit
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+    # Release the video capture and close windows
+    cap.release()
+    cv2.destroyAllWindows()
+
+# Run the main function
+if __name__ == "__main__":
+    main()
