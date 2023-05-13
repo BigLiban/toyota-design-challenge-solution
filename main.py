@@ -2,7 +2,7 @@ import cv2
 
 # Load the two images
 img1 = cv2.imread('Photos/1_no_holes_covered.jpg')
-img2 = cv2.imread('Photos/2_one_hole_covered_partial.jpg')
+img2 = cv2.imread('Photos/6_some_holes_covered.jpg')
 
 # Compute the absolute difference between the two images
 diff = cv2.absdiff(img1, img2)
