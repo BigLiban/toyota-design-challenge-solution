@@ -1,0 +1,13 @@
+prefix=/Users/mohamed/Desktop/toyota-design-challenge-solution/.conda
+exec_prefix=/Users/mohamed/Desktop/toyota-design-challenge-solution/.conda
+libdir=/Users/mohamed/Desktop/toyota-design-challenge-solution/.conda/lib
+sharedlibdir=/Users/mohamed/Desktop/toyota-design-challenge-solution/.conda/lib
+includedir=/Users/mohamed/Desktop/toyota-design-challenge-solution/.conda/include
+
+Name: zlib
+Description: zlib compression library
+Version: 1.2.13
+
+Requires:
+Libs: -L${libdir} -L${sharedlibdir} -lz
+Cflags: -I${includedir}

@@ -1,0 +1,19 @@
+#
+# Author: Lasse Collin
+#
+# This file has been put into the public domain.
+# You can do whatever you want with this file.
+#
+
+prefix=/Users/mohamed/Desktop/toyota-design-challenge-solution/.conda
+exec_prefix=/Users/mohamed/Desktop/toyota-design-challenge-solution/.conda
+libdir=/Users/mohamed/Desktop/toyota-design-challenge-solution/.conda/lib
+includedir=/Users/mohamed/Desktop/toyota-design-challenge-solution/.conda/include
+
+Name: liblzma
+Description: General purpose data compression library
+URL: https://tukaani.org/xz/
+Version: 5.4.2
+Cflags: -I${includedir}
+Libs: -L${libdir} -llzma
+Libs.private: -pthread -lpthread
