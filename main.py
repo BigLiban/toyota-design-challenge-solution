@@ -40,7 +40,7 @@ def highlight_dark_holes(image):
     return image
 
 # Initialize the video capture
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(1)
 
 while True:
     # Read a frame from the video feed
