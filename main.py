@@ -1,34 +1,65 @@
 import cv2
+import numpy as np
 
-# Load the two images
-img1 = cv2.imread('Photos/1_no_holes_covered.jpg')
-img2 = cv2.imread('Photos/6_some_holes_covered.jpg')
+def highlight_dark_holes(image):
+    # Convert the image to grayscale
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-# Compute the absolute difference between the two images
-diff = cv2.absdiff(img1, img2)
+    # Apply adaptive thresholding to obtain a binary image
+    _, thresh = cv2.threshold(gray, 10, 255, cv2.THRESH_BINARY_INV)
 
-# Convert the difference to grayscale
-gray = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
+    # Find contours in the binary image
+    contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-# Apply threshold to filter out small differences
-threshold_value = 32 # adjust to fit your use case
-_, thresh = cv2.threshold(gray, threshold_value, 255, cv2.THRESH_BINARY)
+    # Iterate through the contours and filter based on size and circularity
+    for contour in contours:
+        area = cv2.contourArea(contour)
+        perimeter = cv2.arcLength(contour, True)
 
-# Apply a median filter to remove noise
-kernel_size = 3 # adjust to fit your use case
-median = cv2.medianBlur(thresh, kernel_size)
+        # Exclude contours with a perimeter of zero
+        if perimeter == 0:
+            continue
 
-# Find contours of the differences
-contours, _ = cv2.findContours(median, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        circularity = 7.5 * np.pi * area / (perimeter * perimeter)
 
-# Draw rectangles around the differences
-for contour in contours:
-    (x, y, w, h) = cv2.boundingRect(contour)
-    cv2.rectangle(img1, (x, y), (x + w, y + h), (0, 0, 255), 2)
-    cv2.rectangle(img2, (x, y), (x + w, y + h), (0, 0, 255), 2)
+        # Filter contours based on size and circularity
+        min_area = 100
+        max_area = 10000
+        min_circularity = 0.3
+        max_circularity = 2
 
-# Display the images with differences highlighted
-cv2.imshow('Image 1', img1)
-cv2.imshow('Image 2', img2)
-cv2.waitKey(0)
+        if min_area < area < max_area and min_circularity < circularity < max_circularity:
+            # Calculate the center and radius of the enclosing circle
+            (x, y), radius = cv2.minEnclosingCircle(contour)
+            center = (int(x), int(y))
+            radius = int(radius)
+
+            # Draw the circle on the original image
+            cv2.circle(image, center, radius, (0, 0, 255), 2)
+
+    return image
+
+# Initialize the video capture
+cap = cv2.VideoCapture(1)
+
+while True:
+    # Read a frame from the video feed
+    ret, frame = cap.read()
+
+    # Check if the frame was successfully captured
+    if not ret:
+        break
+
+    # Highlight the dark holes in the frame
+    result_frame = highlight_dark_holes(frame)
+
+    # Display the result
+    cv2.imshow("Result", result_frame)
+
+    # Check for the 'q' key to exit the loop
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+# Release the video capture and close the windows
+cap.release()
 cv2.destroyAllWindows()
